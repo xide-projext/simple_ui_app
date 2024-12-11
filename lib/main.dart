@@ -1,169 +1,378 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(NewsApp());
+  runApp(MyApp());
 }
 
-class NewsApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        textTheme: TextTheme(
-          bodyMedium: TextStyle(color: Colors.grey[800], fontSize: 16),
+    return ChangeNotifierProvider(
+      create: (_) => BookmarkProvider(),
+      child: MaterialApp(
+        title: 'My News Curator',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
+        home: MainNavigation(),
       ),
-      home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class MainNavigation extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainNavigationState createState() => _MainNavigationState();
 }
 
-class _HomePageState extends State<HomePage> {
-  String locationMessage = "Click the button to see local news";
-  List<Map<String, String>> localNewsArticles = [];
-  List<Map<String, String>> worldNewsArticles = [
-    {"title": "Global Summit", "content": "Highlights from the latest global summit."},
-    {"title": "Economic Trends", "content": "An analysis of global economic trends."},
-  ];
-  List<Map<String, String>> sportsNewsArticles = [
-    {"title": "Dodgers Win Championship", "content": "The Dodgers celebrate their championship victory."},
-    {"title": "Shohei Ohtani Auction", "content": "Ohtani's 50-50 home run ball auctioned for 6 million."},
-    {"title": "Excitement Over Ohtani's Win", "content": "Fans are ecstatic about Ohtani's successful season."},
-  ];
-  List<Map<String, String>> scienceNewsArticles = [
-    {"title": "Space Discovery", "content": "New data from the latest space mission."},
-    {"title": "Tech Innovations", "content": "Recent advancements in AI technology."},
-  ];
-  List<Map<String, String>> entertainmentNewsArticles = [
-    {"title": "Movie Premiere", "content": "Reviews for the latest blockbuster."},
-    {"title": "Celebrity Interview", "content": "An exclusive interview with a popular actor."},
-  ];
-  List<Map<String, String>> politicsNewsArticles = [
-    {"title": "Election Results", "content": "Results from the latest election cycle."},
-    {"title": "Trump vs. Harris: The 2024 Showdown", "content": "As the election approaches, Donald Trump and Kamala Harris engage in a heated debate over the future of America."},
-    {"title": "Policy Changes", "content": "New policy changes and their impacts."},
+class _MainNavigationState extends State<MainNavigation> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    NewsFeedPage(),
+    SearchPage(),
+    BookmarkPage(),
+    ProfileSettingsPage(),
   ];
 
-  void _fetchNews() {
+  void _onItemTapped(int index) {
     setState(() {
-      locationMessage = "Displaying local news";
-      localNewsArticles = _fetchLocalNews();
+      _currentIndex = index;
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewsCategoriesPage(
-          localNews: localNewsArticles,
-          worldNews: worldNewsArticles,
-          sportsNews: sportsNewsArticles,
-          scienceNews: scienceNewsArticles,
-          entertainmentNews: entertainmentNewsArticles,
-          politicsNews: politicsNewsArticles,
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'News'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Bookmarks'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
+
+class BookmarkProvider extends ChangeNotifier {
+  final List<dynamic> _bookmarks = [];
+
+  List<dynamic> get bookmarks => _bookmarks;
+
+  void addBookmark(dynamic article) {
+    if (!_bookmarks.contains(article)) {
+      _bookmarks.add(article);
+      notifyListeners();
+    }
+  }
+
+  void removeBookmark(dynamic article) {
+    _bookmarks.remove(article);
+    notifyListeners();
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Home')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Smarter, Faster News',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NewsFeedPage()),
+                );
+              },
+              child: Text('Go to News Feed'),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  List<Map<String, String>> _fetchLocalNews() {
-    return [
-      {"title": "Local Event Near You", "content": "A major event happening in your area."},
-      {"title": "Weather Update", "content": "The weather in your region is sunny with clear skies."},
-      {"title": "Community News", "content": "New community center opening soon nearby."},
-    ];
+class NewsFeedPage extends StatefulWidget {
+  @override
+  _NewsFeedPageState createState() => _NewsFeedPageState();
+}
+
+class _NewsFeedPageState extends State<NewsFeedPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final List<String> _categories = [
+    'world',
+    'politics',
+    'technology',
+    'culture',
+    'economy',
+  ];
+
+  @override
+  void initState() {
+    _tabController = TabController(length: _categories.length, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
+        title: Text('News Feed'),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabs: _categories
+              .map((category) => Tab(text: category.capitalize()))
+              .toList(),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: TabBarView(
+        controller: _tabController,
+        children: _categories
+            .map((category) => NewsCategoryPage(category: category))
+            .toList(),
+      ),
+    );
+  }
+}
+
+class NewsCategoryPage extends StatelessWidget {
+  final String category;
+
+  NewsCategoryPage({required this.category});
+
+  Future<List<dynamic>> _fetchNews(String category) async {
+    const apiKey = 'b2e27113-1394-4124-9d98-76620bcd92bc';
+    final url =
+        'https://content.guardianapis.com/search?section=$category&api-key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['response']['results'];
+    } else {
+      throw Exception('Failed to fetch news');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<dynamic>>(
+      future: _fetchNews(category),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No articles found.'));
+        } else {
+          final articles = snapshot.data!;
+          return ListView.builder(
+            itemCount: articles.length,
+            itemBuilder: (context, index) {
+              final article = articles[index];
+              return NewsTile(article: article);
+            },
+          );
+        }
+      },
+    );
+  }
+}
+
+class NewsTile extends StatelessWidget {
+  final dynamic article;
+
+  NewsTile({required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    final bookmarkProvider = context.watch<BookmarkProvider>();
+
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      child: ListTile(
+        title: Text(article['webTitle'] ?? 'No title'),
+        subtitle: Text(article['sectionName'] ?? 'No section'),
+        trailing: IconButton(
+          icon: Icon(bookmarkProvider.bookmarks.contains(article)
+              ? Icons.bookmark
+              : Icons.bookmark_border),
+          onPressed: () {
+            bookmarkProvider.bookmarks.contains(article)
+                ? bookmarkProvider.removeBookmark(article)
+                : bookmarkProvider.addBookmark(article);
+          },
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewsDetailPage(article: article),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ProfileSettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Profile Settings')),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: _fetchNews,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigoAccent,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                'Show News Categories',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 20),
             Text(
-              locationMessage,
-              style: TextStyle(fontSize: 16, color: Colors.black54),
-              textAlign: TextAlign.center,
+              'Customize Your Preferences',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Voice Command'),
-                    content: Text('Voice command feature is not implemented yet.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('OK'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              icon: Icon(Icons.mic, color: Colors.white),
-              label: Text(
-                'Enter Voice Command',
-                style: TextStyle(fontSize: 16),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Favorite Topics',
+                border: OutlineInputBorder(),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Save Preferences'),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.indigo,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.arrow_back),
-            label: 'Back',
-          ),
-        ],
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.popUntil(context, (route) => route.isFirst);
-          } else if (index == 1) {
-            if (Navigator.of(context).canPop()) {
-              Navigator.pop(context);
-            }
+    );
+  }
+}
+
+class SearchPage extends StatelessWidget {
+  final TextEditingController _searchController = TextEditingController();
+
+  Future<List<dynamic>> _searchArticles(String query) async {
+    const apiKey = 'b2e27113-1394-4124-9d98-76620bcd92bc';
+    final url =
+        'https://content.guardianapis.com/search?q=$query&api-key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['response']['results'];
+    } else {
+      throw Exception('Failed to search articles');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Search')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search for articles...',
+                border: OutlineInputBorder(),
+              ),
+              onSubmitted: (query) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchResultsPage(query: query),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchResultsPage extends StatelessWidget {
+  final String query;
+
+  SearchResultsPage({required this.query});
+
+  Future<List<dynamic>> _searchArticles(String query) async {
+    const apiKey = 'b2e27113-1394-4124-9d98-76620bcd92bc';
+    final url =
+        'https://content.guardianapis.com/search?q=$query&api-key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['response']['results'];
+    } else {
+      throw Exception('Failed to search articles');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Search Results')),
+      body: FutureBuilder<List<dynamic>>(
+        future: _searchArticles(query),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No results found.'));
+          } else {
+            final results = snapshot.data!;
+            return ListView.builder(
+              itemCount: results.length,
+              itemBuilder: (context, index) {
+                final article = results[index];
+                return NewsTile(article: article);
+              },
+            );
           }
         },
       ),
@@ -171,79 +380,65 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class NewsCategoriesPage extends StatelessWidget {
-  final List<Map<String, String>> localNews;
-  final List<Map<String, String>> worldNews;
-  final List<Map<String, String>> sportsNews;
-  final List<Map<String, String>> scienceNews;
-  final List<Map<String, String>> entertainmentNews;
-  final List<Map<String, String>> politicsNews;
+class BookmarkPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final bookmarks = context.watch<BookmarkProvider>().bookmarks;
 
-  NewsCategoriesPage({
-    required this.localNews,
-    required this.worldNews,
-    required this.sportsNews,
-    required this.scienceNews,
-    required this.entertainmentNews,
-    required this.politicsNews,
-  });
+    return Scaffold(
+      appBar: AppBar(title: Text('Bookmarks')),
+      body: bookmarks.isEmpty
+          ? Center(child: Text('No bookmarks yet.'))
+          : ListView.builder(
+              itemCount: bookmarks.length,
+              itemBuilder: (context, index) {
+                final article = bookmarks[index];
+                return NewsTile(article: article);
+              },
+            ),
+    );
+  }
+}
+
+class NewsDetailPage extends StatelessWidget {
+  final dynamic article;
+
+  NewsDetailPage({required this.article});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('News Categories', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-      ),
-      body: ListView(
+      appBar: AppBar(title: Text(article['webTitle'] ?? 'Article Details')),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        children: [
-          _buildCategoryCard(context, 'Local News', localNews, Colors.blueAccent),
-          _buildCategoryCard(context, 'World News', worldNews, Colors.greenAccent),
-          _buildCategoryCard(context, 'Sports News', sportsNews, Colors.orangeAccent),
-          _buildCategoryCard(context, 'Science News', scienceNews, Colors.purpleAccent),
-          _buildCategoryCard(context, 'Entertainment News', entertainmentNews, Colors.pinkAccent),
-          _buildCategoryCard(context, 'Politics News', politicsNews, Colors.redAccent),
-        ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              article['webTitle'] ?? 'No title',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Category: ${article['sectionName'] ?? 'Unknown'}',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                // Open article URL
+              },
+              child: Text(article['webUrl'] ?? 'No URL available'),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildCategoryCard(BuildContext context, String title, List<Map<String, String>> articles, Color color) {
-    return Card(
-      color: color.withOpacity(0.2),
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color.withOpacity(0.7)),
-        ),
-        children: articles.map((article) {
-          return ListTile(
-            title: Text(article['title'] ?? ''),
-            subtitle: Text(article['content'] ?? ''),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(article['title'] ?? ''),
-                  content: Text(article['content'] ?? ''),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Close'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }).toList(),
-      ),
-    );
+extension StringExtension on String {
+  String capitalize() {
+    return '${this[0].toUpperCase()}${substring(1)}';
   }
 }

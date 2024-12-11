@@ -1,0 +1,155 @@
+{
+  "news": [
+    {
+      "id": "1",
+      "category": "Technology",
+      "title": "AI Innovations",
+      "content": "Latest AI trends.",
+      "author": "TechTimes",
+      "image": "image_url"
+    },
+    {
+      "id": "2",
+      "category": "Health",
+      "title": "Health Tips",
+      "content": "Daily wellness tips.",
+      "author": "Health Daily",
+      "image": "image_url"
+    },
+    {
+      "id": "295d",
+      "news": [
+        {
+          "id": 1,
+          "category": "Technology",
+          "title": "AI Innovations",
+          "content": "Latest AI trends.",
+          "author": "TechTimes",
+          "image": "image_url"
+        },
+        {
+          "id": 2,
+          "category": "Health",
+          "title": "Health Tips",
+          "content": "Daily wellness tips.",
+          "author": "Health Daily",
+          "image": "image_url"
+        }
+      ],
+      "categories": [
+        {
+          "id": 1,
+          "name": "Technology"
+        },
+        {
+          "id": 2,
+          "name": "Health"
+        },
+        {
+          "id": 3,
+          "name": "Sports"
+        },
+        {
+          "id": 4,
+          "name": "Politics"
+        }
+      ]
+    },
+    {
+      "id": "284d",
+      "news": [
+        {
+          "id": "1",
+          "category": "Technology",
+          "title": "AI Innovations",
+          "content": "Latest AI trends.",
+          "author": "TechTimes",
+          "image": "image_url"
+        },
+        {
+          "id": "2",
+          "category": "Health",
+          "title": "Health Tips",
+          "content": "Daily wellness tips.",
+          "author": "Health Daily",
+          "image": "image_url"
+        },
+        {
+          "id": "295d",
+          "news": [
+            {
+              "id": 1,
+              "category": "Technology",
+              "title": "AI Innovations",
+              "content": "Latest AI trends.",
+              "author": "TechTimes",
+              "image": "image_url"
+            },
+            {
+              "id": 2,
+              "category": "Health",
+              "title": "Health Tips",
+              "content": "Daily wellness tips.",
+              "author": "Health Daily",
+              "image": "image_url"
+            }
+          ],
+          "categories": [
+            {
+              "id": 1,
+              "name": "Technology"
+            },
+            {
+              "id": 2,
+              "name": "Health"
+            },
+            {
+              "id": 3,
+              "name": "Sports"
+            },
+            {
+              "id": 4,
+              "name": "Politics"
+            }
+          ]
+        }
+      ],
+      "categories": [
+        {
+          "id": "1",
+          "name": "Technology"
+        },
+        {
+          "id": "2",
+          "name": "Health"
+        },
+        {
+          "id": "3",
+          "name": "Sports"
+        },
+        {
+          "id": "4",
+          "name": "Politics"
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Technology"
+    },
+    {
+      "id": "2",
+      "name": "Health"
+    },
+    {
+      "id": "3",
+      "name": "Sports"
+    },
+    {
+      "id": "4",
+      "name": "Politics"
+    }
+  ]
+}
