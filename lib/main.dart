@@ -441,7 +441,7 @@ class BookmarkPage extends StatelessWidget {
     );
   }
 }
- 
+   
 class NewsDetailPage extends StatelessWidget {
   final dynamic article;
 
