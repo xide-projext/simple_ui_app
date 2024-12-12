@@ -4,12 +4,12 @@ class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({super.key});
 
   @override
-  State<ProfileSettingsPage> createState() => ProfileSettingsPageState();
+  _ProfileSettingsPageState createState() => _ProfileSettingsPageState();
 }
 
-class ProfileSettingsPageState extends State<ProfileSettingsPage> {
-  final TextEditingController preferencesController = TextEditingController();
-  final List<String> preferences = [];
+class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
+  final TextEditingController _preferencesController = TextEditingController();
+  final List<String> _preferences = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class ProfileSettingsPageState extends State<ProfileSettingsPage> {
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: preferencesController,
+              controller: _preferencesController,
               decoration: const InputDecoration(
                 labelText: 'Add Preference',
                 border: OutlineInputBorder(),
@@ -36,23 +36,23 @@ class ProfileSettingsPageState extends State<ProfileSettingsPage> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  preferences.add(preferencesController.text);
-                  preferencesController.clear();
+                  _preferences.add(_preferencesController.text);
+                  _preferencesController.clear();
                 });
               },
               child: const Text('Save Preference'),
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: preferences.length,
+                itemCount: _preferences.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(preferences[index]),
+                    title: Text(_preferences[index]),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
                         setState(() {
-                          preferences.removeAt(index);
+                          _preferences.removeAt(index);
                         });
                       },
                     ),
@@ -66,4 +66,3 @@ class ProfileSettingsPageState extends State<ProfileSettingsPage> {
     );
   }
 }
-

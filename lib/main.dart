@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'providers/bookmark_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/main_navigation.dart';
-
+ 
 void main() {
   runApp(
     MultiProvider(
