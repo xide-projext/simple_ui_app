@@ -1,5 +1,5 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../models/post.dart';
 
 class ApiService {
@@ -12,7 +12,7 @@ class ApiService {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(utf8.decode(response.bodyBytes)); // Ensure proper UTF-8 decoding
       final results = data['response']['results'] as List<dynamic>;
       return results.map((json) => Post.fromGuardianJson(json)).toList();
     } else {

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/post.dart';
 import '../providers/bookmark_provider.dart';
 import '../screens/post_details_page.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import for opening URLs
 
 class NewsTile extends StatelessWidget {
   final Post post;
@@ -21,17 +22,34 @@ class NewsTile extends StatelessWidget {
             : null,
         title: Text(post.title),
         subtitle: Text(post.summary, maxLines: 2, overflow: TextOverflow.ellipsis),
-        trailing: IconButton(
-          icon: Icon(
-            bookmarkProvider.bookmarks.contains(post)
-                ? Icons.bookmark
-                : Icons.bookmark_border,
-          ),
-          onPressed: () {
-            bookmarkProvider.bookmarks.contains(post)
-                ? bookmarkProvider.removeBookmark(post)
-                : bookmarkProvider.addBookmark(post);
-          },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                bookmarkProvider.bookmarks.contains(post)
+                    ? Icons.bookmark
+                    : Icons.bookmark_border,
+              ),
+              onPressed: () {
+                bookmarkProvider.bookmarks.contains(post)
+                    ? bookmarkProvider.removeBookmark(post)
+                    : bookmarkProvider.addBookmark(post);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.open_in_browser),
+              onPressed: () async {
+                if (await canLaunch(post.url)) {
+                  await launch(post.url); // Open the article URL in a browser
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not launch URL')),
+                  );
+                }
+              },
+            ),
+          ],
         ),
         onTap: () {
           Navigator.push(
@@ -45,3 +63,4 @@ class NewsTile extends StatelessWidget {
     );
   }
 }
+

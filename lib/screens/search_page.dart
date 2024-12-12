@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/api_service.dart';
 import '../models/post.dart';
 import '../widgets/news_tile.dart';
-
+ 
 class SearchPage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
