@@ -6,7 +6,7 @@ import '../widgets/news_tile.dart';
 class NewsCategoryPage extends StatelessWidget {
   final String category;
 
-  NewsCategoryPage({required this.category});
+  const NewsCategoryPage({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +14,11 @@ class NewsCategoryPage extends StatelessWidget {
       future: ApiService.fetchPosts(category),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No articles found.'));
+          return const Center(child: Text('No articles found.'));
         } else {
           final posts = snapshot.data!;
           return ListView.builder(

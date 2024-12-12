@@ -6,17 +6,19 @@ import '../widgets/news_tile.dart';
 class SearchPage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
+  SearchPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Search Articles')),
+      appBar: AppBar(title: const Text('Search Articles')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Search articles...',
                 border: OutlineInputBorder(),
               ),
@@ -39,21 +41,21 @@ class SearchPage extends StatelessWidget {
 class SearchResultsPage extends StatelessWidget {
   final String query;
 
-  SearchResultsPage({required this.query});
+  const SearchResultsPage({super.key, required this.query});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Search Results')),
+      appBar: AppBar(title: const Text('Search Results')),
       body: FutureBuilder<List<Post>>(
         future: ApiService.fetchPosts(query),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No articles found.'));
+            return const Center(child: Text('No articles found.'));
           } else {
             final results = snapshot.data!;
             return ListView.builder(

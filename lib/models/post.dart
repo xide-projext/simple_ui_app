@@ -1,4 +1,5 @@
 class Post {
+  final String id;
   final String title;
   final String summary;
   final String url;
@@ -6,6 +7,7 @@ class Post {
   final String createdDate;
 
   Post({
+    required this.id,
     required this.title,
     required this.summary,
     required this.url,
@@ -13,13 +15,13 @@ class Post {
     required this.createdDate,
   });
 
-  factory Post.fromGuardianJson(Map<String, dynamic> json) {
-    final fields = json['fields'] ?? {};
+  factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
+      id: json['id'] ?? '',
       title: json['webTitle'] ?? 'No Title',
-      summary: fields['trailText'] ?? 'No Summary',
+      summary: json['fields']['trailText'] ?? 'No Summary',
       url: json['webUrl'] ?? '',
-      imageUrl: fields['thumbnail'] ?? '',
+      imageUrl: json['fields']['thumbnail'] ?? '',
       createdDate: json['webPublicationDate'] ?? '',
     );
   }

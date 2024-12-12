@@ -4,14 +4,16 @@ import '../providers/bookmark_provider.dart';
 import '../widgets/news_tile.dart';
 
 class BookmarkPage extends StatelessWidget {
+  const BookmarkPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final bookmarks = context.watch<BookmarkProvider>().bookmarks;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Bookmarks')),
+      appBar: AppBar(title: const Text('Bookmarks')),
       body: bookmarks.isEmpty
-          ? Center(child: Text('No bookmarks yet.'))
+          ? const Center(child: Text('No bookmarks yet.'))
           : ListView.builder(
               itemCount: bookmarks.length,
               itemBuilder: (context, index) {
