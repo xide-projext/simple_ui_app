@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/spinning_globe.dart';
 import 'news_feed_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,8 +15,10 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SpinningGlobe(),
+            const SizedBox(height: 20),
             const Text(
-              'Welcome to News Aggregator!',
+              'Smarter, Faster News.',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -39,4 +42,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
