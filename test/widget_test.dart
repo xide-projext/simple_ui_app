@@ -5,7 +5,7 @@ import 'package:simple_ui_app/main.dart';
 void main() {
   testWidgets('App renders MainNavigation widget', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp());
 
     // Verify that the main navigation appears on screen.
     expect(find.byType(BottomNavigationBar), findsOneWidget);
@@ -15,7 +15,7 @@ void main() {
 
   testWidgets('Navigate to NewsFeedPage', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp());
 
     // Tap on the News tab.
     await tester.tap(find.text('News'));
