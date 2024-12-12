@@ -9,18 +9,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8 # iOS-style icons
-  http: ^1.2.2            # For making HTTP requests
-  provider: ^6.0.5        # State management
-  url_launcher: ^6.1.7    # For launching URLs
+  cupertino_icons: ^1.0.8      # iOS-style icons
+  http: ^1.3.0                 # For making HTTP requests
+  provider: ^6.1.3             # State management
+  url_launcher: ^6.1.8         # For launching URLs
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0   # Linting rules
+  flutter_lints: ^4.0.0        # Linting rules
+
+dependency_overrides:
+  url_launcher_android: ^6.3.15
+  url_launcher_platform_interface: ^2.3.3
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/globe.png
-
