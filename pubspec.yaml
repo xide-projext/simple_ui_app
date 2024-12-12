@@ -1,6 +1,6 @@
 name: simple_ui_app
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: 'none' # This project is private; not published to pub.dev.
 version: 1.0.0+1
 
 environment:
@@ -9,16 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  http: ^1.2.2
-  provider: ^6.0.5
-  url_launcher: ^6.1.7
+  cupertino_icons: ^1.0.8 # iOS-style icons
+  http: ^1.2.2            # For making HTTP requests
+  provider: ^6.0.5        # State management
+  url_launcher: ^6.1.7    # For launching URLs
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^4.0.0   # Linting rules
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/globe.png
 
