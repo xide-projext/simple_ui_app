@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlin_version = '1.9.10' // Kotlin 최신 버전
+    ext.kotlin_version = '1.9.10' // 최신 Kotlin 버전
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0' // AGP 최신 버전
+        classpath 'com.android.tools.build:gradle:8.1.0' // 최신 Android Gradle Plugin (AGP)
     }
 }
 
@@ -19,9 +19,12 @@ allprojects {
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
     project.evaluationDependsOn(":app")
 }
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
