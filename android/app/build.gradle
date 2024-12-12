@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.simple_ui_app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34 // Flutter SDK와 호환되는 최신 Android SDK 버전
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -20,14 +20,17 @@ android {
 
     defaultConfig {
         applicationId = "com.example.simple_ui_app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 21 // Flutter와 호환되는 최소 SDK 버전 (필요에 따라 업데이트)
+        targetSdk = 34 // 최신 Android SDK와 일치
+        versionCode = 1 // 앱 버전에 따라 업데이트
+        versionName = "1.0.0"
     }
 
     buildTypes {
         release {
+            // 릴리스 빌드 시 최적화를 활성화
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig = signingConfigs.debug
         }
     }
@@ -38,5 +41,5 @@ flutter {
 }
 
 dependencies {
-    implementation 'androidx.browser:browser:1.5.0' 
+    implementation 'androidx.browser:browser:1.5.0'
 }
