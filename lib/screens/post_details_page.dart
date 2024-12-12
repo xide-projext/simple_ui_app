@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/post.dart';
+import 'package:url_launcher/url_launcher.dart'; // For opening full article URL
 
 class PostDetailsPage extends StatefulWidget {
   final Post post;
@@ -12,6 +13,7 @@ class PostDetailsPage extends StatefulWidget {
 
 class _PostDetailsPageState extends State<PostDetailsPage> {
   final TextEditingController _commentController = TextEditingController();
+  final Map<int, List<String>> _replies = {}; // Map to store replies for each comment
   final List<String> _comments = [];
 
   void _addComment() {
@@ -19,6 +21,14 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       setState(() {
         _comments.add(_commentController.text);
         _commentController.clear();
+      });
+    }
+  }
+
+  void _addReply(int index, String reply) {
+    if (reply.isNotEmpty) {
+      setState(() {
+        _replies[index] = (_replies[index] ?? [])..add(reply);
       });
     }
   }
@@ -48,9 +58,14 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  // Open the full article in browser
+              ElevatedButton(
+                onPressed: () async {
+                  final url = widget.post.url;
+                  if (await canLaunch(url)) {
+                    await launch(url); // Open the full article URL in a browser
+                  } else {
+                    throw 'Could not launch $url';
+                  }
                 },
                 child: const Text('Read Full Article'),
               ),
@@ -64,12 +79,36 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _comments.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_comments[index]),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(_comments[index]),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...?_replies[index]?.map((reply) => Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Text('Reply: $reply'),
+                                )),
+                            const SizedBox(height: 10),
+                            TextField(
+                              onSubmitted: (reply) {
+                                _addReply(index, reply);
+                              },
+                              decoration: const InputDecoration(
+                                labelText: 'Add a reply',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                    ],
                   );
                 },
               ),
-              const SizedBox(height: 10),
               TextField(
                 controller: _commentController,
                 decoration: const InputDecoration(
