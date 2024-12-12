@@ -11,18 +11,18 @@ class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
   @override
-  _MainNavigationState createState() => _MainNavigationState();
+  State<MainNavigation> createState() => MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
-    NewsFeedPage(),
-    SearchPage(),
-    BookmarkPage(),
-    ProfileSettingsPage(),
+    const HomePage(),
+    const NewsFeedPage(),
+    const SearchPage(),
+    const BookmarkPage(),
+    const ProfileSettingsPage(),
   ];
 
   void _onItemTapped(int index) {

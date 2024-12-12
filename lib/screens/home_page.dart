@@ -1,3 +1,4 @@
+// home_page.dart
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                DefaultTabController.of(context)?.animateTo(1); // Navigate to News
+                DefaultTabController.of(context).animateTo(1);
               },
               child: const Text('Go to News Feed'),
             ),

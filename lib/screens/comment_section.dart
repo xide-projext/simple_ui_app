@@ -1,4 +1,3 @@
-// screens/comment_section.dart
 import 'package:flutter/material.dart';
 import '../models/comment.dart';
 
@@ -6,18 +5,18 @@ class CommentSection extends StatefulWidget {
   const CommentSection({super.key});
 
   @override
-  State<CommentSection> createState() => _CommentSectionState();
+  State<CommentSection> createState() => CommentSectionState();
 }
 
-class _CommentSectionState extends State<CommentSection> {
+class CommentSectionState extends State<CommentSection> {
   final List<Comment> _comments = [];
-  final TextEditingController _commentController = TextEditingController();
+  final TextEditingController commentController = TextEditingController();
 
   void _addComment(String text) {
     setState(() {
       _comments.add(Comment(text: text));
     });
-    _commentController.clear();
+    commentController.clear();
   }
 
   void _addReply(Comment parent, String text) {
@@ -32,7 +31,7 @@ class _CommentSectionState extends State<CommentSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
-          controller: _commentController,
+          controller: commentController,
           decoration: const InputDecoration(
             hintText: 'Write a comment...',
             border: OutlineInputBorder(),
@@ -61,7 +60,7 @@ class CommentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _replyController = TextEditingController();
+    final TextEditingController replyController = TextEditingController();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +74,7 @@ class CommentTile extends StatelessWidget {
             children: [
               ...comment.replies.map((reply) => ListTile(title: Text(reply.text))),
               TextField(
-                controller: _replyController,
+                controller: replyController,
                 decoration: const InputDecoration(
                   hintText: 'Write a reply...',
                   border: OutlineInputBorder(),
@@ -83,7 +82,7 @@ class CommentTile extends StatelessWidget {
                 onSubmitted: (replyText) {
                   if (replyText.isNotEmpty) {
                     onReply(replyText);
-                    _replyController.clear();
+                    replyController.clear();
                   }
                 },
               ),
@@ -95,7 +94,6 @@ class CommentTile extends StatelessWidget {
   }
 }
 
-// models/comment.dart
 class Comment {
   final String text;
   final List<Comment> replies;
