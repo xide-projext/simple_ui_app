@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
 import 'home_page.dart';
 import 'news_feed_page.dart';
 import 'search_page.dart';
@@ -18,11 +16,11 @@ class MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
-    const NewsFeedPage(),
-    const SearchPage(),
-    const BookmarkPage(),
-    const ProfileSettingsPage(),
+    HomePage(),
+    NewsFeedPage(),
+    SearchPage(),
+    BookmarkPage(),
+    ProfileSettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -36,18 +34,6 @@ class MainNavigationState extends State<MainNavigation> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Main Navigation'),
-        actions: [
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return Switch(
-                value: themeProvider.isDarkMode,
-                onChanged: (value) {
-                  themeProvider.toggleTheme();
-                },
-              );
-            },
-          ),
-        ],
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
