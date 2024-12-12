@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../extensions/string_extension.dart'; // 확장 메서드 import
+import '../extensions/string_extension.dart';
 import 'news_category_page.dart';
 
 class NewsFeedPage extends StatelessWidget {
-  final List<String> categories = [
-    'world',
-    'politics',
-    'technology',
-    'culture',
-    'economy',
-  ];
-
   const NewsFeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<String> categories = [
+      'world',
+      'politics',
+      'technology',
+      'culture',
+      'economy',
+    ]; // Move the list here to avoid constant expression error.
+
     return DefaultTabController(
       length: categories.length,
       child: Scaffold(
@@ -23,7 +23,7 @@ class NewsFeedPage extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             tabs: categories
-                .map((category) => Tab(text: category.capitalize())) // 확장 메서드 호출
+                .map((category) => Tab(text: category.capitalize())) // Extension method call
                 .toList(),
           ),
         ),
