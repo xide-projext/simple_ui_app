@@ -18,11 +18,11 @@ class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
-    NewsFeedPage(),
+    const HomePage(),
+    const NewsFeedPage(),
     SearchPage(),
-    BookmarkPage(),
-    ProfileSettingsPage(),
+    const BookmarkPage(),
+    const ProfileSettingsPage(),
   ];
 
   void _onItemTapped(int index) {
